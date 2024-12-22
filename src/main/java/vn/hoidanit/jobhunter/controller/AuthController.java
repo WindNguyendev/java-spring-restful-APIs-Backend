@@ -59,11 +59,12 @@ public class AuthController {
                         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                                         currentUserDB.getId(),
                                         currentUserDB.getEmail(),
-                                        currentUserDB.getName());
-                        res.setUserLogin(userLogin);
+                                        currentUserDB.getName(),
+                                        currentUserDB.getRole());
+                        res.setUser(userLogin);
                 }
                 // Tạo ra token
-                String access_token = this.securityUtil.createAccessToken(authentication.getName(), res.getUserLogin());
+                String access_token = this.securityUtil.createAccessToken(authentication.getName(), res);
                 res.setAccsseToken(access_token);
 
                 String refreshToken = this.securityUtil.createRefreshToken(loginDTO.getUsername(), res);
@@ -87,6 +88,7 @@ public class AuthController {
         }
 
         @GetMapping("/auth/account")
+        @ApiMessage("fetch account")
         public ResponseEntity<Object> getAccount() {
                 String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get()
                                 : "";
@@ -98,6 +100,7 @@ public class AuthController {
                         userLogin.setId(currentUserDB.getId());
                         userLogin.setEmail(currentUserDB.getEmail());
                         userLogin.setName(currentUserDB.getName());
+                        userLogin.setRole(currentUserDB.getRole());
                         userGetAccount.setUser(userLogin);
 
                 }
@@ -128,12 +131,13 @@ public class AuthController {
                         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                                         currentUserDB.getId(),
                                         currentUserDB.getEmail(),
-                                        currentUserDB.getName());
+                                        currentUserDB.getName(),
+                                        currentUser.getRole());
 
-                        res.setUserLogin(userLogin);
+                        res.setUser(userLogin);
                         userGetAccount.setUser(userLogin);
                 }
-                String access_token = this.securityUtil.createAccessToken(email, res.getUserLogin());
+                String access_token = this.securityUtil.createAccessToken(email, res);
                 res.setAccsseToken(access_token);
 
                 String new_refreshToken = this.securityUtil.createRefreshToken(email, res);
