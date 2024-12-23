@@ -51,7 +51,7 @@ public class RoleController {
         // throw new IdInvaliException("Role với name = " + r.getName() + " đã tồn
         // tại");
         // }
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.roleService.update(r));
+        return ResponseEntity.ok().body(this.roleService.update(r));
     }
 
     @DeleteMapping("/roles/{id}")
@@ -70,5 +70,15 @@ public class RoleController {
     public ResponseEntity<ResultPaginationDTO> getPermissions(
             @Filter Specification<Role> spec, Pageable pageable) {
         return ResponseEntity.ok(this.roleService.getRoles(spec, pageable));
+    }
+
+    @GetMapping("/roles/{id}")
+    @ApiMessage("Fetch role by id")
+    public ResponseEntity<Role> getById(@PathVariable("id") long id) throws IdInvaliException {
+        Role role = this.roleService.fetchById(id);
+        if (role == null) {
+            throw new IdInvaliException("Resume với id = " + id + " không tồn tại");
+        }
+        return ResponseEntity.ok().body(role);
     }
 }
